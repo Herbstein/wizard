@@ -1,4 +1,6 @@
-#[derive(Copy, Clone, PartialEq, Eq)]
+use rand::{seq::SliceRandom, thread_rng};
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Suit {
     Spade,
     Heart,
@@ -10,7 +12,7 @@ impl Suit {
     pub const ALL: [Suit; 4] = [Suit::Club, Suit::Spade, Suit::Heart, Suit::Diamond];
 }
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Rank {
     Two,
     Three,
@@ -45,7 +47,7 @@ impl Rank {
     ];
 }
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Card {
     Joker,
     Regular { suit: Suit, rank: Rank },
@@ -63,6 +65,8 @@ pub fn gen_deck(jokers: usize) -> Vec<Card> {
     for _ in 0..jokers {
         out.push(Card::Joker);
     }
+
+    out.shuffle(&mut thread_rng());
 
     out
 }
