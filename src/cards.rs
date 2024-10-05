@@ -1,4 +1,4 @@
-use rand::{seq::SliceRandom, thread_rng};
+use rand::{seq::SliceRandom, Rng};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Suit {
@@ -12,7 +12,7 @@ impl Suit {
     pub const ALL: [Suit; 4] = [Suit::Club, Suit::Spade, Suit::Heart, Suit::Diamond];
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd)]
 pub enum Rank {
     Two,
     Three,
@@ -49,24 +49,24 @@ impl Rank {
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Card {
+    Standard { suit: Suit, rank: Rank },
     Joker,
-    Regular { suit: Suit, rank: Rank },
 }
 
-pub fn gen_deck(jokers: usize) -> Vec<Card> {
-    let mut out = Vec::with_capacity(52 + jokers);
+pub fn gen_wizard_deck(rng: &mut impl Rng) -> Vec<Card> {
+    let mut out = Vec::with_capacity(56);
 
     for suit in Suit::ALL {
         for rank in Rank::ALL {
-            out.push(Card::Regular { suit, rank });
+            out.push(Card::Standard { suit, rank });
         }
     }
 
-    for _ in 0..jokers {
+    for _ in 0..4 {
         out.push(Card::Joker);
     }
 
-    out.shuffle(&mut thread_rng());
+    out.shuffle(rng);
 
     out
 }
